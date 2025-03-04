@@ -1,0 +1,6 @@
+flask
+transformers
+torch
+huggingface_hub
+beautifulsoup4
+googlesearch-python
