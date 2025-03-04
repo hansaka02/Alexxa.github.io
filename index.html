@@ -158,7 +158,7 @@
     <script>
         async function checkStatus() {
             try {
-                const response = await fetch('/status'); // Endpoint to check bot status
+                const response = await fetch('https://sexual-devin-alexainc-07fc300c.koyeb.app/status'); // Endpoint to check bot status
                 const data = await response.json();
                 document.getElementById('status').textContent = data.status;
                 document.getElementById('status').style.color = data.status === "Online" ? "green" : "red";
@@ -173,7 +173,7 @@
         // Fetch the bot's phone number
         async function getPhoneNumber() {
             try {
-                const response = await fetch('/get-phone-number'); // Server endpoint to fetch phone number
+                const response = await fetch('https://sexual-devin-alexainc-07fc300c.koyeb.app/get-phone-number'); // Server endpoint to fetch phone number
                 const data = await response.json();
                 return data.phoneNumber;
             } catch (error) {
@@ -197,16 +197,16 @@
         // Function to check if the admin is logged in
         async function checkLoginStatus() {
             try {
-                const response = await fetch('/is-logged-in'); // API to check login status
+                const response = await fetch('https://sexual-devin-alexainc-07fc300c.koyeb.app/is-logged-in'); // API to check login status
                 const data = await response.json();
                 
                 const loginButton = document.getElementById('loginButton');
                 if (data.isLoggedIn) {
                     loginButton.textContent = 'Cpanel'; // Change button text if logged in
-                    loginButton.onclick = function() { window.location.href = '/control'; }; // Redirect to control panel
+                    loginButton.onclick = function() { window.location.href = 'https://sexual-devin-alexainc-07fc300c.koyeb.app/control'; }; // Redirect to control panel
                 } else {
                     loginButton.textContent = 'Admin Login'; // Default button text
-                    loginButton.onclick = function() { window.location.href = 'login.html'; }; // Redirect to login page
+                    loginButton.onclick = function() { window.location.href = 'https://sexual-devin-alexainc-07fc300c.koyeb.app/login.html'; }; // Redirect to login page
                 }
             } catch (error) {
                 console.error("Error checking login status:", error);
