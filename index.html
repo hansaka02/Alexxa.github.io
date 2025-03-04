@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Bot - Baileys API</title>
+
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/rt2Br0AAAAASUVORK5CYII=" type="image/png">
+
+    <style>
+        /* Reset and Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Navbar Styles */
+        /* Navbar Styles */
+.navbar {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with 50% opacity */
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+/* Navbar Text Color */
+.navbar h1 {
+    color: white;
+    margin-left: 20px;
+    font-size: 22px;
+}
+
+/* Login Button */
+.login-button {
+    background-color: white;
+    color: black;
+    padding: 8px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 20px;
+}
+
+.login-button:hover {
+    background-color: #e0e0e0;
+}
+
+
+        /* Page Content */
+        .content {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #25D366;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 18px;
+        }
+
+        #status {
+            font-weight: bold;
+            color: red;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .image-container img {
+            max-width: 250px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        /* WhatsApp Button */
+        .whatsapp-button {
+            background-color: #25D366;
+            color: white;
+            font-size: 16px;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            width: auto;
+            max-width: 250px;
+        }
+
+        .whatsapp-button:hover {
+            background-color: #128C7E;
+        }
+
+        /* Footer */
+        .developer {
+            font-size: 14px;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .copyright {
+            font-size: 14px;
+            color: #888;
+            margin-top: auto;
+            padding: 10px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <h1 onclick="location.href='./';">Alexa v3</h1>
+        <button id="loginButton" class="login-button" onclick="window.location.href='login.html'">admin Login</button>
+    </div>
+
+    <div class="content">
+        <h2>Welcome to Alexa v3</h2>
+        <p>Powered by Baileys API</p>
+        <p>Status: <span id="status">Checking...</span></p>
+
+        <div class="image-container">
+            <img src="https://pngimg.com/uploads/anime_girl/anime_girl_PNG33.png" alt="Anime Girl">
+        </div>
+
+        <p>Message to bot</p>
+        <button class="whatsapp-button" onclick="sendMessage()">WhatsApp</button>
+    </div>
+
+    <script>
+        async function checkStatus() {
+            try {
+                const response = await fetch('/status'); // Endpoint to check bot status
+                const data = await response.json();
+                document.getElementById('status').textContent = data.status;
+                document.getElementById('status').style.color = data.status === "Online" ? "green" : "red";
+            } catch (error) {
+                document.getElementById('status').textContent = "Offline";
+            }
+        }
+
+        checkStatus();
+        setInterval(checkStatus, 5000); // Refresh status every 5 seconds
+
+        // Fetch the bot's phone number
+        async function getPhoneNumber() {
+            try {
+                const response = await fetch('/get-phone-number'); // Server endpoint to fetch phone number
+                const data = await response.json();
+                return data.phoneNumber;
+            } catch (error) {
+                console.error('Failed to fetch phone number:', error);
+                return null;
+            }
+        }
+
+        // Send WhatsApp message function
+        async function sendMessage() {
+            const phoneNumber = await getPhoneNumber();
+            if (phoneNumber) {
+                const message = 'Hello, I want to talk to Alexa!';
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            } else {
+                alert('Unable to retrieve bot phone number.');
+            }
+        }
+
+        // Function to check if the admin is logged in
+        async function checkLoginStatus() {
+            try {
+                const response = await fetch('/is-logged-in'); // API to check login status
+                const data = await response.json();
+                
+                const loginButton = document.getElementById('loginButton');
+                if (data.isLoggedIn) {
+                    loginButton.textContent = 'Cpanel'; // Change button text if logged in
+                    loginButton.onclick = function() { window.location.href = '/control'; }; // Redirect to control panel
+                } else {
+                    loginButton.textContent = 'Admin Login'; // Default button text
+                    loginButton.onclick = function() { window.location.href = 'login.html'; }; // Redirect to login page
+                }
+            } catch (error) {
+                console.error("Error checking login status:", error);
+            }
+        }
+
+        // Check login status when the page loads
+        checkLoginStatus();
+
+    </script>
+
+    <div class="developer">
+        <p>Developer: Hansaka</p>
+    </div>
+
+    <div class="copyright">
+        <p>&copy; 2025 AlexaInc Sri Lanka. All rights reserved.</p>
+    </div>
+
+</body>
+</html>
